@@ -1,11 +1,8 @@
-FROM alpine:3.5
+FROM golang:latest AS builder
+WORKDIR /go/src/teeproxy
+COPY teeproxy.go ./
+RUN go build -o teeproxy
 
-COPY teeproxy.go /usr/local/src/
-
-RUN apk add --no-cache go musl-dev \
-    && cd /usr/local/src/ \
-    && CGO_ENABLED=0 go build teeproxy.go \
-    && mv teeproxy /usr/local/bin/ \
-    && apk del go musl-dev
-
+FROM alpine:3.5 AS runner
+COPY --from=builder /go/src/teeproxy/teeproxy /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/teeproxy"]
