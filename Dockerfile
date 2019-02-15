@@ -1,4 +1,4 @@
-FROM golang:latest AS builder
+FROM golang:alpine AS builder
 WORKDIR /go/src/teeproxy
 COPY teeproxy.go ./
 RUN go build -o teeproxy
